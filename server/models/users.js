@@ -28,9 +28,8 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    default: 'Student'
+    default: 'Lawyer'
   },
-  additionalRole: String,
   isEmailVerified: {
     type: Boolean,
     default: false
@@ -39,41 +38,13 @@ const userSchema = new mongoose.Schema({
   emailVerificationCode: {
     type: String
   },
-  department: {
+  mobileNo: {
     type: String
   },
-  student_details: {
-    isEligible: String,
-    batch: String,
-    regNo: String
-  },
-  ugpc_details: {
-    position: String,
-    committeeType: String,
-    committees: [String],
-    designation: String,
-    projects: [{
-      project: {type: ObjectId, ref: "Projects"},
-      title: String
-    }],
-  },
-  supervisor_details: {
-    projects: [{
-      project: {type: ObjectId, ref: "Projects"},
-      title: String
-    }],
-    position: String
-  },
-  chairman_details: {
-    settings: {
-      marksDistribution: {
-        proposal: String,
-        supervisor: String,
-        internal: String,
-        external: String,
-      },
-      batches: []
-    }
+  lawyer_details: {
+    institute: String,
+    qualification: String,
+    skills: []
   }
 });
 

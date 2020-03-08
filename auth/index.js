@@ -5,7 +5,7 @@ import Router from 'next/router';
 import nextCookie from 'next-cookies';
 
 export const signup = user =>{
-    return  fetch(`${serverUrl}/auth/student/signup`,{
+    return  fetch(`${serverUrl}/auth/signup`,{
         method:"POST",
         headers:{
             Accept:"application/json",
@@ -36,12 +36,12 @@ export const signin = user =>{
 
 export const authenticate = (data)=>{
     cookie.set('token',data,{expires: 7});
-    Router.push('/sign-in');
+    Router.push('/');
 };
 
 export const signout = ()=>{
     cookie.remove('token');
-   Router.push('/sign-in')
+   Router.push('/')
 };
 
 export const isAuthenticated =()=>{
@@ -52,16 +52,6 @@ export const isAuthenticated =()=>{
     else {
         return false;
     }
-};
-
-export const isEligible =async (token)=>{
-   return await fetch(`${serverUrl}/auth/isEligible`,{
-        method:"GET",
-        headers:{
-            Accept: "application/json",
-            Authorization:`Bearer ${token}`
-        }
-    });
 };
 
 export const verifyEmail = data =>{
@@ -127,115 +117,6 @@ export const studentAuth = ctx => {
 
 
 };
-export const ugpcMemberAuth = (ctx, position,committeeType) =>{
-    const { token } = nextCookie(ctx);
-    const user =token ? JSON.parse(token) : {user:{role:'',additionalRole:'',ugpc_details: {position: '',committeeType: ''}}};
-    if (ctx.req && !token) {
-        ctx.res.writeHead(302, { Location: '/sign-in' });
-        ctx.res.end();
-        return
-    }
-    else if (ctx.req && token && user.user.additionalRole !== 'UGPC_Member' ){
-        ctx.res.writeHead(302, { Location: '/sign-in' });
-        ctx.res.end();
-        return
-    }
-    else if (ctx.req && token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position !== position ){
-        ctx.res.writeHead(302, { Location: '/sign-in' });
-        ctx.res.end();
-        return
-    }else if (ctx.req && token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === position && user.user.ugpc_details.committeeType !== committeeType ){
-        ctx.res.writeHead(302, { Location: '/sign-in' });
-        ctx.res.end();
-        return
-    }
-
-    if (!token){
-        Router.push('/sign-in')
-    }
-    else if (token &&  user.user.additionalRole !== 'UGPC_Member') {
-        Router.push('/sign-in')
-    }
-    else if (token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position !== position){
-        Router.push('/sign-in')
-    }
-    else if (token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === position && user.user.ugpc_details.committeeType !== committeeType){
-        console.log(committeeType)
-        Router.push('/sign-in')
-    }
-    return token
-};
-export const supervisorAuth = ctx => {
-    const { token } = nextCookie(ctx);
-    const user =token ? JSON.parse(token) : {user:{role:''}};
-
-    if (ctx.req && !token) {
-        ctx.res.writeHead(302, { Location: '/sign-in' });
-        ctx.res.end();
-        return
-    }
-    else if (ctx.req && token && user.user.role !== 'Supervisor'){
-        ctx.res.writeHead(302, { Location: '/sign-in' });
-        ctx.res.end();
-        return
-    }
-
-    if (!token){
-        Router.push('/sign-in')
-    }
-    else if (token &&  user.user.role !== 'Supervisor') {
-        Router.push('/sign-in')
-    }
-    return token
-};
-
-export const chairmanAuth = ctx => {
-    const { token } = nextCookie(ctx);
-    const user =token ? JSON.parse(token) : {user:{role:''}};
-
-    if (ctx.req && !token) {
-        ctx.res.writeHead(302, { Location: '/sign-in' });
-        ctx.res.end();
-        return
-    }
-    else if (ctx.req && token && user.user.role !== 'Chairman DCSSE'){
-        ctx.res.writeHead(302, { Location: '/sign-in' });
-        ctx.res.end();
-        return
-    }
-
-    if (!token){
-        Router.push('/sign-in')
-    }
-    else if (token &&  user.user.role !== 'Chairman DCSSE') {
-        Router.push('/sign-in')
-    }
-    return token
-};
-export const officeAuth = (ctx,role) => {
-    const { token } = nextCookie(ctx);
-    const user =token ? JSON.parse(token) : {user:{role:''}};
-
-    if (ctx.req && !token) {
-        ctx.res.writeHead(302, { Location: '/sign-in' });
-        ctx.res.end();
-        return
-    }
-    else if (ctx.req && token && user.user.role !== role){
-        ctx.res.writeHead(302, { Location: '/sign-in' });
-        ctx.res.end();
-        return
-    }
-
-    if (!token){
-        Router.push('/sign-in')
-    }
-    else if (token &&  user.user.role !== role) {
-        Router.push('/sign-in')
-    }
-    return token
-};
-
 export const landingAuth = ctx => {
     const { token } = nextCookie(ctx);
     const user =token ? JSON.parse(token) : {user:{role:'',additionalRole: '',ugpc_details:{position:'',committeeType:''}}};

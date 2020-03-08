@@ -69,11 +69,11 @@ const LandingPageLayout = props => {
   const drawer = (
     <div className={classes.list}>
       <div className={classes.avatarMargin}>
-        <Avatar alt="IIUI-LOGO" src='/static/avatar/iiui-logo.jpg' className={classes.avatarDrawer}/>
+        <Avatar alt="Lawyer-Assistant" src='/static/avatar/logo.jpg' className={classes.avatarDrawer}/>
       </div>
       <Divider/>
       <List>
-        <Link href='/sign-in'>
+        <Link href='/'>
           <ListItem button>
             <ListItemIcon>
               <Input/>
@@ -81,7 +81,7 @@ const LandingPageLayout = props => {
             <ListItemText primary={'Login'}/>
           </ListItem>
         </Link>
-        <Link href='/student/sign-up'>
+        <Link href='/sign-up'>
           <ListItem button>
             <ListItemIcon>
               <Input/>
@@ -110,24 +110,24 @@ const LandingPageLayout = props => {
                 </IconButton>
               </Hidden>
               <Link href='/'>
-                <Avatar alt="IIUI-LOGO"
-                        src="/static/avatar/iiui-logo.jpg"
+                <Avatar alt="Lawyer-Assistant"
+                        src="/static/avatar/logo.jpg"
                         className={classes.avatar}
                 />
               </Link>
               <Typography variant='h6' color='textSecondary' className={classes.title}>
                 <Link href='/'>
                   <a className={classes.link}>
-                    UGPC Software
+                    Lawyer Assistant
                   </a>
                 </Link>
               </Typography>
 
               <Hidden xsDown>
-                <Link href='/sign-in'>
+                <Link href='/'>
                   <Button color="primary" className={classes.button}>Login</Button>
                 </Link>
-                <Link href='/student/sign-up'>
+                <Link href='/sign-up'>
                   <Button color="primary" className={classes.button}>Sign Up</Button>
                 </Link>
               </Hidden>

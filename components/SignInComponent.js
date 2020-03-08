@@ -68,7 +68,7 @@ const SignInComponent = () => {
       {loading && <LinearProgress color='secondary'/>}
       <Container component="main" maxWidth="xs">
         <div className={classes.paper}>
-          <Avatar alt="IIUI-LOGO" src="/static/avatar/iiui-logo.jpg" className={classes.avatar}/>
+          <Avatar alt="Lawyer-Assistant" src="/static/avatar/logo.jpg" className={classes.avatar}/>
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
@@ -122,7 +122,7 @@ const SignInComponent = () => {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="/student/sign-up">
+              <Link href="/sign-up">
                 <a>Don't have an account? Sign Up</a>
               </Link>
             </Grid>

@@ -12,17 +12,31 @@ import router from 'next/router';
 import SuccessSnackBar from "./snakbars/SuccessSnackBar";
 import ErrorSnackBar from "./snakbars/ErrorSnackBar";
 import {fetchBatchesAPI} from "../utils/apiCalls/users";
+import Paper from "@material-ui/core/Paper";
+import Chip from "@material-ui/core/Chip";
+import {makeStyles} from "@material-ui/styles";
 
+const useStyles = makeStyles(theme => ({
+  moduleChip: {
+    padding: theme.spacing(1)
+  },
+  chip: {
+    margin: theme.spacing(0.5),
+  }
+}))
 const SignUpComponent = () => {
   const classes = useSignInStyles();
+  const signUpClasses = useStyles();
   const [values, setValues] = useState({
     name: '',
     email: '',
     password: '',
-    regNo: '',
-    department: '',
-    batch: '',
+    mobileNo: '',
+    institute: '',
+    qualification: '',
+    skills:[]
   });
+  const [currentSkill, setCurrentSkill] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({
     open: false,
@@ -41,15 +55,19 @@ const SignUpComponent = () => {
       show: false,
       message: ''
     },
-    regNo: {
+    mobileNo: {
       show: false,
       message: ''
     },
-    department: {
+    institute: {
       show: false,
       message: ''
     },
-    batch: {
+    qualification: {
+      show: false,
+      message: ''
+    },
+    skills: {
       show: false,
       message: ''
     },
@@ -73,15 +91,19 @@ const SignUpComponent = () => {
         show: false,
         message: ''
       },
-      regNo: {
+      mobileNo: {
         show: false,
         message: ''
       },
-      department: {
+      institute: {
         show: false,
         message: ''
       },
-      batch: {
+      qualification: {
+        show: false,
+        message: ''
+      },
+      skills: {
         show: false,
         message: ''
       },
@@ -98,12 +120,12 @@ const SignUpComponent = () => {
         }
       });
       return false;
-    } else if (!values.email.match(/.+\@iiu\.edu\.pk/)) {
+    } else if (!values.email.match(/\S+@\S+\.\S+/)) {
       setFormErrors({
         ...formErrors,
         email: {
           show: true,
-          message: 'Please use Email Provided by University'
+          message: 'Please Provide valid Email'
         }
       });
       return false;
@@ -125,28 +147,37 @@ const SignUpComponent = () => {
         }
       });
       return false;
-    } else if (!values.regNo.match(/^\d{4}$/)) {
+    } else if (!values.mobileNo.match(/^[0-9]{11}$/)) {
       setFormErrors({
         ...formErrors,
-        regNo: {
+        mobileNo: {
           show: true,
           message: 'Invalid!'
         }
       });
       return false;
-    } else if (values.department === '') {
+    } else if (values.institute === '') {
       setFormErrors({
         ...formErrors,
-        department: {
+        institute: {
           show: true,
           message: 'Required!'
         }
       });
       return false;
-    } else if (values.batch === '') {
+    } else if (values.qualification === '') {
       setFormErrors({
         ...formErrors,
-        batch: {
+        qualification: {
+          show: true,
+          message: 'Required!'
+        }
+      });
+      return false;
+    } else if (values.skills.length === 0) {
+      setFormErrors({
+        ...formErrors,
+        skills: {
           show: true,
           message: 'Required!'
         }
@@ -163,11 +194,11 @@ const SignUpComponent = () => {
         name: values.name,
         email: values.email.toLowerCase(),
         password: values.password,
-        department: values.department,
-        student_details: {
-          isEligible: 'Pending',
-          batch: values.batch,
-          regNo: `${values.regNo}-FBAS/${values.department}/${values.batch}`
+        mobileNo: values.mobileNo,
+        lawyer_details: {
+          qualification: values.qualification,
+          institute: values.institute,
+          skills: values.skills
         }
       };
       signup(user)
@@ -178,28 +209,56 @@ const SignUpComponent = () => {
           } else {
             setResMessage({open: true, message: data.message, id: data._id})
           }
-
-
         })
         .catch(err => {
           console.log(err)
         })
     }
-
   };
 
   const handleSuccess = () => {
     setResMessage({...resMessage, open: false, message: ''});
-    router.push(`/student/verify-email/[id]`, `/student/verify-email/${resMessage.id}`)
+    router.push(`/verify-email/[id]`, `/verify-email/${resMessage.id}`)
   };
   const handleError = () => {
     setError({open: false, message: ''})
   };
+  const handleSubmitSkills = e => {
+    e.preventDefault();
+    if (currentSkill.trim() !== '') {
+      setValues({
+        ...values,
+        skills: [
+          ...values.skills,
+          {
+            key: values.skills.length + 1,
+            label: currentSkill
+          }
+        ]
+      });
+      setCurrentSkill('')
+    }
+  };
+  const handleDelete = skillToDelete => {
+    setValues({
+      ...values,
+      skills: values.skills.filter(skill => skill.key !== skillToDelete.key)
+    });
+  };
+  const handleChangeSkill = e => {
+    setFormErrors({...formErrors,
+      skills: {
+        show: false,
+        message: ''
+    }});
+    setCurrentSkill(e.target.value);
+  }
   return (
     <div>
       {loading && <LinearProgress color='secondary'/>}
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="sm">
         <div className={classes.paper}>
+          <Avatar alt="Lawyer-Assistant" src="/static/avatar/logo.jpg" className={classes.avatar}/>
           <Typography component="h1" variant="h5">
            Sign up
           </Typography>
@@ -209,9 +268,9 @@ const SignUpComponent = () => {
           <ErrorSnackBar message={error.message} open={error.open} handleSnackBar={handleError}/>
         </div>
 
-        <form className={classes.form} onSubmit={handleSubmit}>
+        <div className={classes.form}>
           <Grid container spacing={1}>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 name="name"
                 variant="outlined"
@@ -227,7 +286,7 @@ const SignUpComponent = () => {
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 variant="outlined"
                 required
@@ -242,7 +301,7 @@ const SignUpComponent = () => {
                 helperText={formErrors.email.message}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 variant="outlined"
                 required
@@ -257,81 +316,90 @@ const SignUpComponent = () => {
                 helperText={formErrors.password.message}
               />
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 variant="outlined"
                 required
                 fullWidth
                 type="tel"
-                value={values.regNo}
+                value={values.mobileNo}
                 onChange={handleChange}
                 name="mobileNo"
                 label="Mobile No"
                 id="mobileNo"
-                pattern="[0-9]{4}-[0-9]{7}"
-                placeholder={'0300-0000000'}
-                error={formErrors.regNo.show}
-                helperText={formErrors.regNo.message}
+                placeholder={'03001234567'}
+                error={formErrors.mobileNo.show}
+                helperText={formErrors.mobileNo.message}
               />
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 variant="outlined"
                 required
                 fullWidth
-                value={values.regNo}
+                value={values.institute}
                 onChange={handleChange}
                 name="institute"
-                label="Lawschool/Institute"
+                label="Law School/Institute"
                 id="institute"
-                error={formErrors.regNo.show}
-                helperText={formErrors.regNo.message}
+                error={formErrors.institute.show}
+                helperText={formErrors.institute.message}
               />
             </Grid>
-            <Grid item xs={6} sm={4}>
-              <FormControl fullWidth error={formErrors.department.show} variant="outlined"
-                           className={classes.formControl}>
-                <InputLabel htmlFor="department">
-                  Department
-                </InputLabel>
-                <Select
-                  value={values.department}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  value={values.qualification}
                   onChange={handleChange}
-                  autoWidth
-                  input={<OutlinedInput labelWidth={85} fullWidth name="department" id="department" required/>}
-                >
-                  <MenuItem value='BSSE'>BSSE</MenuItem>
-                  <MenuItem value='BSCS'>BSCS</MenuItem>
-                  <MenuItem value='BSIT'>BSIT</MenuItem>
-                </Select>
-                <Typography variant='caption' color='error'>{formErrors.department.message}</Typography>
-              </FormControl>
+                  name="qualification"
+                  label="Qualification"
+                  id="qualification"
+                  error={formErrors.qualification.show}
+                  helperText={formErrors.qualification.message}
+              />
             </Grid>
-            <Grid item xs={6} sm={4}>
-              <FormControl fullWidth error={formErrors.batch.show} variant="outlined" className={classes.formControl}>
-                <InputLabel htmlFor="batch">
-                  Batch
-                </InputLabel>
-                <Select
-                  value={values.batch}
-                  onChange={handleChange}
-                  autoWidth
-                  input={<OutlinedInput labelWidth={45} fullWidth name="batch" id="batch" required/>}
-                >
-                  {
-                    batches.map((batch, index) =>
-                      <MenuItem key={index} value={batch}>{batch}</MenuItem>
-                    )
+            <Grid item xs={12}>
+              <form id='skill-form' onSubmit={handleSubmitSkills}>
+                <TextField
+                    variant="outlined"
+                    required
+                    fullWidth
+                    value={currentSkill}
+                    onChange={handleChangeSkill}
+                    name="currentSkill"
+                    label="Add Skills"
+                    error={formErrors.skills.show}
+                    helperText={formErrors.skills.message}
+                />
+                <Paper className={signUpClasses.moduleChip}>
+                  {values.skills.length > 0 ? values.skills.map(skill => {
+                        return (
+                            <Chip
+                                key={skill.key}
+                                variant='outlined'
+                                color='secondary'
+                                label={skill.label}
+                                onDelete={() => handleDelete(skill)}
+                                className={signUpClasses.chip}
+                            />
+                        );
+                      }) :
+                      <Chip
+                          variant='outlined'
+                          color='primary'
+                          label={'No Skills Added Yet'}
+                          className={signUpClasses.chip}
+                      />
                   }
-                </Select>
-                <Typography variant='caption' color='error'>{formErrors.batch.message}</Typography>
-              </FormControl>
+                </Paper>
+              </form>
             </Grid>
-
           </Grid>
 
           <Button
-            type="submit"
+            onClick={handleSubmit}
             fullWidth
             variant="contained"
             color="primary"
@@ -341,12 +409,12 @@ const SignUpComponent = () => {
           </Button>
           <Grid container justify="center">
             <Grid item>
-              <Link href="/sign-in">
+              <Link href="/">
                 <a>Already have an account? Sign in</a>
               </Link>
             </Grid>
           </Grid>
-        </form>
+        </div>
         <Box mt={5}>
           <CopyrightComponent/>
         </Box>

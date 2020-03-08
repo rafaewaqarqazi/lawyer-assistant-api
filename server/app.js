@@ -1,12 +1,7 @@
 const express = require('express');
 const next = require('next');
-const dotenv = require('dotenv');
 const mongoose = require('mongoose');
-const StudentsRouter = require('./routes/students');
 const AuthRouter = require('./routes/auth');
-const ProjectsRouter = require('./routes/projects');
-const visionDocumentRouter = require('./routes/visionDocument');
-const backlogRouter = require('./routes/backlog');
 const userRouter = require('./routes/users');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
@@ -41,27 +36,13 @@ app.prepare()
     server.use(express.json());
     server.use(cookieParser());
     //Routes
-    server.use('/api/students', StudentsRouter);
     server.use('/api/auth', AuthRouter);
-    server.use('/api/projects', ProjectsRouter);
-    server.use('/api/visionDocument', visionDocumentRouter);
-    server.use('/api/backlog', backlogRouter);
     server.use('/api/users', userRouter);
     //Unauthorized Handler
     server.use(function (err, req, res, next) {
       if (err.name === 'UnauthorizedError') {
         res.status(401).json({error: "You are not Authorized to perform this Action"})
       }
-    });
-    server.get('/pdf/:fileName', (req, res) => {
-      const file = path.join(__dirname, '..', 'public','static', req.path)
-      // console.log(path.join(__dirname,'..',''))
-      app.serveStatic(req, res, file)
-    });
-    server.get('/presentation/:fileName', (req, res) => {
-      const file = path.join(__dirname, '..', 'public','static', req.path)
-      // console.log(path.join(__dirname,'..',''))
-      app.serveStatic(req, res, file)
     });
     server.get('/images/:fileName', (req, res) => {
       const file = path.join(__dirname, '..', 'public','static', req.path)
@@ -78,27 +59,6 @@ app.prepare()
     });
     server.get('/sign-in', (req, res) => {
       return app.render(req, res, '/sign-in', req.query)
-    });
-    server.get('/student/sign-up', (req, res) => {
-      return app.render(req, res, '/student/sign-up', req.query)
-    });
-    server.get('/student/roadmap', (req, res) => {
-      return app.render(req, res, '/student/roadmap', req.query)
-    });
-    // server.get('/student/verify-email/:id',(req,res)=>{
-    //     return app.render(req, res, '/student/verify-email',{id:req.params.id})
-    // });
-    server.get('/student/project/create', (req, res) => {
-      return app.render(req, res, '/student/project/create', req.query)
-    });
-    server.get('/student/project/backlog', (req, res) => {
-      return app.render(req, res, '/student/project/backlog', req.query)
-    });
-    server.get('/student/project/vision-document', (req, res) => {
-      return app.render(req, res, '/student/project/vision-document', req.query)
-    });
-    server.get('/student/project/vision-document/new', (req, res) => {
-      return app.render(req, res, '/student/project/vision-document/new', req.query)
     });
     server.get('*', (req, res) => {
       return handle(req, res)
