@@ -1,6 +1,0 @@
-{
-  "verbose": true,
-  "ignore": ["node_modules",".next", "pages"],
-  "watch": ["server/controllers/*","server/helpers/*","server/models/*","server/routes/*","server/validator/*","server/app.js","server/upload.js"],
-  "ext": "js json"
-}
