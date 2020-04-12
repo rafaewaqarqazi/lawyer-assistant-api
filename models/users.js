@@ -3,7 +3,12 @@ const uuidv1 = require('uuid/v1');
 const crypto = require('crypto');
 const {ObjectId} = mongoose.Schema;
 const userSchema = new mongoose.Schema({
-  name: {
+  firstName: {
+    type: String,
+    trim: true,
+    required: true
+  },
+  lastName: {
     type: String,
     trim: true,
     required: true
@@ -26,26 +31,15 @@ const userSchema = new mongoose.Schema({
   profileImage: {
     filename: String
   },
-  role: {
-    type: String,
-    default: 'Lawyer'
-  },
-  isEmailVerified: {
-    type: Boolean,
-    default: false
-  },
+  role: String,
   resetPasswordLink: String,
-  emailVerificationCode: {
-    type: String
-  },
-  mobileNo: {
-    type: String
-  },
+  mobileNo: String,
   lawyer_details: {
-    institute: String,
+    institution: String,
     qualification: String,
     skills: []
-  }
+  },
+  clientDetails: {}
 });
 
 

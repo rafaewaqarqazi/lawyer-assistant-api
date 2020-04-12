@@ -1,9 +1,9 @@
 const express = require('express');
 const {userById} = require("../controllers/users");
 const {
-  signup,
+  register,
   verifyEmail,
-  signin,
+  login,
   getUser,
   forgotPassword,
   resetPassword,
@@ -12,10 +12,10 @@ const {
 const router = express.Router();
 
 router.get('/:userId', getUser);
-router.post('/signup', signup);
+router.post('/register', register);
 router.put('/verify-email', verifyEmail);
 router.put('/resend/code', resendVerificationCode);
-router.post('/signin', signin);
+router.post('/login', login);
 router.put('/forgot-password', forgotPassword);
 router.put('/reset-password', resetPassword);
 

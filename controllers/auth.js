@@ -3,74 +3,60 @@ const expressjwt = require('express-jwt');
 require('dotenv').config();
 const User = require('../models/users');
 const {sendEmail} = require("../helpers");
-const generator = require('generate-password');
 
-
-exports.signup = async (req, res) => {
+exports.register = async (req, res) => {
 
   const userExists = await User.findOne({email: req.body.email});
   if (userExists) return res.status(403).json({
-    error: "User Already Exists"
+    success: false,
+    message: "User Already Exists"
   });
-  const emailVerCode = Math.floor(Math.random() * 1000000);
 
-  const user = await new User({
-    ...req.body,
-    emailVerificationCode: emailVerCode
-  });
+  const user = await new User({...req.body});
   const newUser = await user.save();
   if (newUser) {
-    const {email} = req.body;
-    const emailData = {
-      to: email,
-      subject: "Email Verification Instructions",
-      text: `Please use the following code for email verification ${emailVerCode}`,
-      html: `<p>Please use the following code for email verification</p> <h3>${emailVerCode}</h3>`
-    };
-
-    sendEmail(emailData)
     await res.json({
-      _id: newUser._id,
-      message: `Please check your email for Verification`
+      success: true
     });
   }
 };
 
-exports.signin = (req, res) => {
+exports.login = (req, res) => {
   const {email, password} = req.body;
   User.findOne({email}, (err, user) => {
     if (err || !user) {
       return res.status(401).json({
-        error: "User does not exist"
+        message: "User does not exist"
       })
     }
 
     if (!user.authenticate(password)) {
       return res.status(401).json({
-        error: "Email/Password does not match"
+        message: "Email/Password does not match"
       })
     }
     //Generating Key
-    const {_id, name, email, role, isEmailVerified, lawyer_details} = user;
+    const {_id, firstName, lastName, email, role, lawyer_details, clientDetails} = user;
 
-    const token = jwt.sign({_id, role}, process.env.JWT_SECRET);
+    const authToken = jwt.sign({_id, role}, process.env.JWT_SECRET);
     const loggedInUser = {
       _id,
       email,
-      name,
+      firstName,
+      lastName,
       role,
-      isEmailVerified,
-      lawyer_details
+      lawyer_details,
+      clientDetails
     };
     return res.json({
-      token,
+      authToken,
       user: loggedInUser
     });
   })
 };
 
 exports.isLawyer = (req, res, next) => {
-  let student = req.auth && req.auth.role === "Lawyer";
+  let student = req.auth && req.auth.role === "2";
   if (!student) {
     return res.status(403).json({
       error: "You are Not Authorized to perform this action"

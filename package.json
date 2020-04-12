@@ -6,10 +6,11 @@
   "author": "rafaewaqarqazi <rafaewaqar@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon app.js",
-    "build": "next build",
-    "start": "cross-env NODE_ENV=\\\"production\\\" node app.js",
-    "prod_start": "cross-env NODE_ENV=\\\"production\\\" node app.js"
+    "server": "nodemon app.js",
+    "start:client": "npm start --prefix ../lawyer-assistant-client",
+    "start:server": "nodemon app.js",
+    "start": "node server.js",
+    "dev": "npm-run-all --parallel start:*"
   },
   "dependencies": {
     "compression": "1.7.4",
@@ -28,6 +29,7 @@
     "multer": "1.4.2",
     "nodemailer": "6.3.0",
     "nodemon": "1.19.1",
+    "npm-run-all": "^4.1.5",
     "uuid": "3.3.2"
   }
 }
