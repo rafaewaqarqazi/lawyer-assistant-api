@@ -28,18 +28,20 @@ const userSchema = new mongoose.Schema({
     default: Date.now()
   },
   updatedAt: Date,
+  role: String,
+  address: String,
+  country: String,
+  resetPasswordLink: String,
+  mobileNo: String,
+  admin_details: {},
   profileImage: {
     filename: String
   },
-  role: String,
-  resetPasswordLink: String,
-  mobileNo: String,
-  lawyer_details: {
-    institution: String,
-    qualification: String,
-    skills: []
-  },
-  clientDetails: {}
+  user_details: {
+    cv: {
+      filename: String
+    }
+  }
 });
 
 

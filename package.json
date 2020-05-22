@@ -1,8 +1,8 @@
 {
-  "name": "lawyer-assistant",
+  "name": "recruitment-agency",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://github.com/rafaewaqarqazi/lawyer-assistant-api.git",
+  "repository": "https://github.com/rafaewaqarqazi/recruitment-agency-client.git",
   "author": "rafaewaqarqazi <rafaewaqar@gmail.com>",
   "license": "MIT",
   "scripts": {
@@ -20,6 +20,7 @@
     "dotenv": "8.0.0",
     "express": "4.17.1",
     "express-jwt": "5.3.1",
+    "generate-password": "^1.5.1",
     "js-cookie": "2.2.0",
     "jsonwebtoken": "8.5.1",
     "lodash": "4.17.15",
