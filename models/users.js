@@ -37,11 +37,8 @@ const userSchema = new mongoose.Schema({
   profileImage: {
     filename: String
   },
-  user_details: {
-    cv: {
-      filename: String
-    }
-  }
+  client_details: {},
+  lawyer_details: {}
 });
 
 

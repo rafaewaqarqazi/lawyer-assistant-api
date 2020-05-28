@@ -7,20 +7,14 @@ const generator = require('generate-password');
 exports.register = async (req, res) => {
 
   try {
-    const body = JSON.parse(req.body.data)
+    const body = req.body
     const userExists = await User.findOne({email: body.email});
     if (userExists) return res.json({
       success: false,
       message: "User Already Exists"
     });
     const newUserData = {
-      ...body,
-      role: '1',
-      user_details: {
-        cv: {
-          filename: req.file.filename
-        }
-      }
+      ...body
     }
     const user = await new User(newUserData);
     const newUser = await user.save();
@@ -83,22 +77,17 @@ exports.createAdmin = async (req, res) => {
 };
 exports.editProfile = async (req, res) => {
   try {
-    const {userId, cv, ...body} = JSON.parse(req.body.data)
+    const {userId, ...body} = req.body
     const userUpdate = await User.findByIdAndUpdate(userId, {
-      ...body,
-      user_details: {
-        cv: {
-          filename: req.file ? req.file.filename : cv
-        }
-      }
+      ...body
     }, {new: true})
     if (userUpdate) {
-      const {_id, firstName, lastName, email, role, user_details, admin_details, address, country, mobileNo, profileImage} = userUpdate;
+      const {_id, firstName, lastName, email, role, client_details, lawyer_details, address, country, mobileNo, profileImage} = userUpdate;
       await res.json({
         success: true,
         message: 'Updated Successfully!',
         user: {
-          _id, firstName, lastName, email, role, user_details, admin_details, address, country, mobileNo, profileImage
+          _id, firstName, lastName, email, role, client_details, lawyer_details, address, country, mobileNo, profileImage
         }
       });
     } else {
@@ -186,7 +175,7 @@ exports.login = (req, res) => {
       })
     }
     //Generating Key
-    const {_id, firstName, lastName, email, role, user_details, admin_details, address, country, mobileNo, profileImage} = user;
+    const {_id, firstName, lastName, email, role, client_details, lawyer_details, address, country, mobileNo, profileImage} = user;
 
     const authToken = jwt.sign({_id, role}, process.env.JWT_SECRET);
     const loggedInUser = {
@@ -195,8 +184,8 @@ exports.login = (req, res) => {
       firstName,
       lastName,
       role,
-      user_details,
-      admin_details,
+      client_details,
+      lawyer_details,
       address,
       country,
       mobileNo, profileImage
