@@ -38,7 +38,16 @@ const userSchema = new mongoose.Schema({
     filename: String
   },
   client_details: {},
-  lawyer_details: {}
+  lawyer_details: {
+    lawSchool: String,
+    practiceAreas: [],
+    bio: String,
+    ratings: {
+      type: String,
+      default: '0'
+    },
+    reviews: []
+  }
 });
 
 

@@ -88,6 +88,15 @@ exports.changePassword = async (req, res) => {
   }
 };
 
+exports.getAllLawyers = async (req, res) => {
+  try {
+    const lawyers = await User.find({"role": '2'});
+    await res.json({success: true, lawyers})
+  } catch (e) {
+    await res.json({error: e.message})
+  }
+};
+
 exports.removeUser = async (req, res) => {
   try {
     const result = await User.remove({"_id": req.params.userId});

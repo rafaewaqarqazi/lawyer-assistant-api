@@ -77,9 +77,14 @@ exports.createAdmin = async (req, res) => {
 };
 exports.editProfile = async (req, res) => {
   try {
-    const {userId, ...body} = req.body
+    const {userId, lawSchool, practiceAreas, bio, role, ...body} = req.body
     const userUpdate = await User.findByIdAndUpdate(userId, {
-      ...body
+      ...body,
+      lawyer_details: role === '2' ? {
+        lawSchool,
+        practiceAreas,
+        bio
+      } : null
     }, {new: true})
     if (userUpdate) {
       const {_id, firstName, lastName, email, role, client_details, lawyer_details, address, country, mobileNo, profileImage} = userUpdate;

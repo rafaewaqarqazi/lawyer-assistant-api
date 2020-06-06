@@ -22,7 +22,7 @@ router.get('/:userId', getUser);
 router.post('/register', register);
 router.put('/profile/edit', editProfile);
 router.put('/profile/image/:type', upload.single('image'), editProfileImage);
-router.post('/admin/register', registerAdmin);
+router.post('/lawyer/register', registerAdmin);
 router.post('/login', login);
 router.put('/forgot-password', forgotPassword);
 router.put('/change-password', changePassword);

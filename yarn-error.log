@@ -29,7 +29,7 @@ npm manifest:
   {
     "name": "lawyer-assistant",
     "version": "1.0.0",
-    "main": "index.js",
+    "main": "cases.js",
     "repository": "https://github.com/rafaewaqarqazi/lawyer-assistant.git",
     "author": "rafaewaqarqazi <rafaewaqar@gmail.com>",
     "license": "MIT",
