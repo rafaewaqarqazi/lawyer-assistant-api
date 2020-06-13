@@ -82,4 +82,5 @@ userSchema.methods = {
     }
   }
 };
+userSchema.index({"lawyer_details.bio": "text"})
 module.exports = mongoose.model('Users', userSchema);

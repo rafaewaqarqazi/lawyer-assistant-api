@@ -1,5 +1,6 @@
 const User = require('../models/users');
 const fs = require('fs');
+const natural = require('natural');
 require('dotenv').config()
 exports.userById = (req, res, next, id) => {
   User.findById(id)
@@ -92,6 +93,21 @@ exports.getAllLawyers = async (req, res) => {
   try {
     const lawyers = await User.find({"role": '2'});
     await res.json({success: true, lawyers})
+  } catch (e) {
+    await res.json({error: e.message})
+  }
+};
+
+exports.testNlp = async (req, res) => {
+  try {
+    natural.PorterStemmer.attach();
+    const testString = 'Our founding attorney brings a wealth of knowledge and experience to the table. As a former associate at two large Metro Atlanta law firms, Attorney Effiong is both poised and experienced in handling complex civil and business disputes as well as making deals happen through effective contracting and negotiation strategies. Prior to becoming a lawyer, Attorney Effiong was a Georgia public school teacher and later a Program Director coaching and developing novice teachers. She has also served as an advocate for students with special needs and students experiencing academic or behavioral challenges in school. From this experience, she knows what types of services are available and she can analyze education issues holistically.'
+    const strDistance = natural.JaroWinklerDistance(testString, req.body.text, undefined, true)
+    const result = await User.find(
+      { $text: { $search:  req.body.text } },
+      { score: { $meta: "textScore" } }
+    ).sort( { score: { $meta: "textScore" } } )
+    await res.json({strDistance, result})
   } catch (e) {
     await res.json({error: e.message})
   }

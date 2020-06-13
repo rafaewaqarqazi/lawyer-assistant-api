@@ -5,7 +5,8 @@ const {
   changePassword,
   changeName,
   removeUser,
-  getAllLawyers
+  getAllLawyers,
+  testNlp
 } = require('../controllers/users');
 const upload = require('../upload');
 const {requireSignin} = require('../controllers/auth');
@@ -16,4 +17,5 @@ router.get('/lawyers/all', getAllLawyers)
 router.put('/change/name', requireSignin, changeName);
 router.put('/change/password', requireSignin, changePassword);
 router.delete('/remove/:userId', requireSignin, removeUser);
+router.post('/test', testNlp);
 module.exports = router;
