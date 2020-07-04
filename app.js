@@ -10,6 +10,7 @@ const http = require('http')
 const socketio = require('socket.io')
 
 const path = require('path');
+const {handleSocket} = require("./helpers/socketHandler");
 const dev = process.env.NODE_ENV !== 'production';
 
 const PORT = process.env.PORT || 3001;
@@ -19,16 +20,7 @@ const io = socketio(server)
 
 //Socket.io
 
-io.on('connection', (socket) => {
-  console.log('a user connected !!!', socket);
-
-  socket.on('message', ({message}) => {
-    console.log('message', message)
-  })
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-});
+io.on('connection', handleSocket);
 
 
 app.use(compression())
