@@ -46,7 +46,18 @@ const userSchema = new mongoose.Schema({
       type: String,
       default: '0'
     },
-    reviews: []
+    reviews: [],
+    canHire: [],
+    cases: [{
+      client: {type: ObjectId, ref: "Users"},
+      title: String,
+      description: String,
+      hearings: [{
+        title: String,
+        description: String,
+        date: Date
+      }]
+    }]
   }
 });
 

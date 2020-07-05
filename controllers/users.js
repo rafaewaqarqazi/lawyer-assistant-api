@@ -113,6 +113,36 @@ exports.testNlp = async (req, res) => {
   }
 };
 
+exports.allowHiring = async (req, res) => {
+  try {
+    const {lawyerId, clientId} = req.body
+    const result = await User.findOneAndUpdate({_id: lawyerId}, {
+      $addToSet:{
+        "lawyer_details.canHire": clientId
+      }
+    })
+    await res.json({success: true, message: 'Allowed Successfully'})
+  } catch (e) {
+    await res.json({error: e.message})
+  }
+}
+exports.hireLawyer = async (req, res) => {
+  try {
+    const {lawyerId, clientId, title, description} = req.body
+    const result = await User.findOneAndUpdate({_id: lawyerId}, {
+      $addToSet:{
+        "lawyer_details.cases": {
+          client: clientId,
+          title,
+          description
+        }
+      }
+    }, {new: true})
+    await res.json({success: true, message: 'Hired Successfully', lawyer: result})
+  } catch (e) {
+    await res.json({error: e.message})
+  }
+}
 exports.removeUser = async (req, res) => {
   try {
     const result = await User.remove({"_id": req.params.userId});
