@@ -1,4 +1,5 @@
 const User = require('../models/users');
+const Cases = require('../models/cases');
 const fs = require('fs');
 const natural = require('natural');
 require('dotenv').config()
@@ -129,16 +130,16 @@ exports.allowHiring = async (req, res) => {
 exports.hireLawyer = async (req, res) => {
   try {
     const {lawyerId, clientId, title, description} = req.body
-    const result = await User.findOneAndUpdate({_id: lawyerId}, {
-      $addToSet:{
-        "lawyer_details.cases": {
-          client: clientId,
-          title,
-          description
-        }
+    const result = await Cases.create({
+      client: clientId,
+      lawyer: lawyerId,
+      details: {
+        title,
+        description
       }
-    }, {new: true})
-    await res.json({success: true, message: 'Hired Successfully', lawyer: result})
+    }).populate('client', 'firstName lastName email profileImage')
+    .populate('lawyer', 'firstName lastName email profileImage')
+    await res.json({success: true, message: 'Hired Successfully', result})
   } catch (e) {
     await res.json({error: e.message})
   }

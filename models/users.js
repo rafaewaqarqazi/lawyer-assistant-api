@@ -48,16 +48,6 @@ const userSchema = new mongoose.Schema({
     },
     reviews: [],
     canHire: [],
-    cases: [{
-      client: {type: ObjectId, ref: "Users"},
-      title: String,
-      description: String,
-      hearings: [{
-        title: String,
-        description: String,
-        date: Date
-      }]
-    }]
   }
 });
 

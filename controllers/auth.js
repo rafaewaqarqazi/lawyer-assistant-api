@@ -86,6 +86,7 @@ exports.editProfile = async (req, res) => {
         bio
       } : null
     }, {new: true})
+      .populate('lawyer_details.cases.client', 'fistName lastName email profileImage')
     if (userUpdate) {
       const {_id, firstName, lastName, email, role, client_details, lawyer_details, address, country, mobileNo, profileImage} = userUpdate;
       await res.json({
@@ -110,6 +111,7 @@ exports.editProfileImage = async (req, res) => {
         filename: req.file.filename
       }
     }, {new: true})
+      .populate('lawyer_details.cases.client', 'fistName lastName email profileImage')
     if (userUpdate) {
       const {_id, firstName, lastName, email, role, user_details, admin_details, address, country, mobileNo, profileImage} = userUpdate;
       await res.json({

@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const AuthRouter = require('./routes/auth');
 const userRouter = require('./routes/users');
+const casesRouter = require('./routes/cases');
 const jobsRouter = require('./routes/jobs');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
@@ -47,6 +48,7 @@ app.use(cookieParser());
 app.use('/api/auth', AuthRouter);
 app.use('/api/users', userRouter);
 app.use('/api/jobs', jobsRouter);
+app.use('/api/cases', casesRouter);
 //Unauthorized Handler
 app.use(function (err, req, res, next) {
   if (err.name === 'UnauthorizedError') {
