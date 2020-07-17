@@ -20,13 +20,27 @@ exports.addNewHearing = async (req, res) => {
         "details.hearings": {
           title,
           description,
-          date
+          date,
+          status: 'Pending'
         }
       }
     }, {new: true})
       .populate('lawyer', 'firstName lastName profileImage email lawyer_details')
       .populate('client', 'firstName lastName profileImage email')
     await res.json({success: true, message: 'Hearing Added Successfully!', cases})
+  } catch (e) {
+    await res.json({error: 'something went wrong!'})
+  }
+}
+exports.changeHearingStatus = async (req, res) => {
+  try {
+    const {caseId, status, id} = req.body
+    const cases = await Cases.findOneAndUpdate({_id: mongoose.Types.ObjectId(caseId), "details.hearings._id": mongoose.Types.ObjectId(id)}, {
+      "details.hearings.$.status": status
+    }, {new: true})
+      .populate('lawyer', 'firstName lastName profileImage email lawyer_details')
+      .populate('client', 'firstName lastName profileImage email')
+    await res.json({success: true, message: 'Status Changed Successfully!', cases})
   } catch (e) {
     await res.json({error: 'something went wrong!'})
   }
