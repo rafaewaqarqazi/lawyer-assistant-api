@@ -93,7 +93,8 @@ exports.changePassword = async (req, res) => {
 
 exports.getAllLawyers = async (req, res) => {
   try {
-    const lawyers = await User.find({"role": '2'});
+    const lawyers = await User.find({"role": '2'})
+      .populate('lawyer_details.reviews.reviewedBy', 'firstName lastName profileImage address')
     await res.json({success: true, lawyers})
   } catch (e) {
     await res.json({error: e.message})
@@ -135,6 +136,37 @@ exports.allowHiring = async (req, res) => {
 
     sendEmail(emailData);
     await res.json({success: true, message: 'Allowed Successfully'})
+  } catch (e) {
+    await res.json({error: e.message})
+  }
+}
+exports.reviewLawyer = async (req, res) => {
+  try {
+    const {lawyerId, clientId, ratingTxt, newRating} = req.body
+    const result = await User.findOneAndUpdate({_id: lawyerId}, {
+      $addToSet:{
+        "lawyer_details.reviews": {
+          reviewedBy: clientId,
+          text: ratingTxt,
+          rating: newRating
+        }
+      }
+    }, {new: true})
+      .populate('lawyer_details.reviews.reviewedBy', 'firstName lastName profileImage')
+    const client = await User.findById(clientId).select('email')
+    const emailData = {
+      to: result.email,
+      subject: "User Reviews",
+      html: `
+        <p>Dear Lawyer,</p>
+        <p>You got new Review from <b>${client.firstName} ${client.lastName}</b>:</p>
+        <p><b>Rating:</b> ${newRating}</p>
+        <p><b>Review:</b> ${ratingTxt}</p>
+      `
+    };
+
+    sendEmail(emailData);
+    await res.json({success: true, message: 'Reviewed Successfully', result})
   } catch (e) {
     await res.json({error: e.message})
   }

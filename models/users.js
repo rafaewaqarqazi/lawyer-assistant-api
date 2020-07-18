@@ -46,7 +46,11 @@ const userSchema = new mongoose.Schema({
       type: String,
       default: '0'
     },
-    reviews: [],
+    reviews: [{
+      text: String,
+      rating: String,
+      reviewedBy: {type: ObjectId, ref: "Users"}
+    }],
     canHire: [],
   }
 });
