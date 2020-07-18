@@ -2,6 +2,7 @@ const User = require('../models/users');
 const Cases = require('../models/cases');
 const fs = require('fs');
 const natural = require('natural');
+const {sendEmail} = require("../helpers");
 require('dotenv').config()
 exports.userById = (req, res, next, id) => {
   User.findById(id)
@@ -122,6 +123,17 @@ exports.allowHiring = async (req, res) => {
         "lawyer_details.canHire": clientId
       }
     })
+    const client = await User.findById(clientId).select('email')
+    const emailData = {
+      to: client.email,
+      subject: "Hiring Allowed",
+      html: `
+        <p>Dear Client,</p>
+        <p>You have been You have been allowed to hire <b>${result.firstName} ${result.lastName}</b></p>
+      `
+    };
+
+    sendEmail(emailData);
     await res.json({success: true, message: 'Allowed Successfully'})
   } catch (e) {
     await res.json({error: e.message})
@@ -130,15 +142,36 @@ exports.allowHiring = async (req, res) => {
 exports.hireLawyer = async (req, res) => {
   try {
     const {lawyerId, clientId, title, description} = req.body
-    const result = await Cases.create({
+    const newCase = await Cases.create({
       client: clientId,
       lawyer: lawyerId,
       details: {
         title,
         description
       }
-    }).populate('client', 'firstName lastName email profileImage')
-    .populate('lawyer', 'firstName lastName email profileImage')
+    })
+    const result = await Cases.findById(newCase._id)
+      .populate('client', 'firstName lastName email profileImage')
+      .populate('lawyer', 'firstName lastName email profileImage')
+    const clientEmailData = {
+      to: result.client.email,
+      subject: "Lawyer Hired",
+      html: `
+        <p>Dear Client,</p>
+        <p>You successfully hired <b>${result.lawyer.firstName} ${result.lawyer.lastName}</b> for the case <b>${result.details.title}</b></p>
+      `
+    };
+    const lawyerEmailData = {
+      to: result.lawyer.email,
+      subject: "You have been Hired",
+      html: `
+        <p>Dear Lawyer,</p>
+        <p>You have been successfully hired by <b>${result.client.firstName} ${result.client.lastName}</b> for the case <b>${result.details.title}</b></p>
+      `
+    };
+
+    sendEmail(clientEmailData);
+    sendEmail(lawyerEmailData);
     await res.json({success: true, message: 'Hired Successfully', result})
   } catch (e) {
     await res.json({error: e.message})
