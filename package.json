@@ -1,8 +1,8 @@
 {
-  "name": "recruitment-agency",
+  "name": "lawyer-assistant",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://github.com/rafaewaqarqazi/recruitment-agency-client.git",
+  "repository": "https://github.com/rafaewaqarqazi/lawyer-assistant-client.git",
   "author": "rafaewaqarqazi <rafaewaqar@gmail.com>",
   "license": "MIT",
   "scripts": {

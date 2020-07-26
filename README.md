@@ -1,12 +1,12 @@
-API for recruitment agency app in express.js with MongoDB
+API for lawyer assistant app in express.js with MongoDB
 ## Setup
 
-create a root directory `recruitment-agency`
+create a root directory `lawyer-assistant`
 and clone these two repositories in it
 
-`git clone https://github.com/rafaewaqarqazi/recruitment-agency-api.git`
+`git clone https://github.com/rafaewaqarqazi/lawyer-assistant-api.git`
 
-`git clone https://github.com/rafaewaqarqazi/recruitment-agency-client.git`
+`git clone https://github.com/rafaewaqarqazi/lawyer-assistant-client.git`
 ## Available Scripts
 
 In the project client directory, run:
