@@ -179,7 +179,8 @@ exports.hireLawyer = async (req, res) => {
       lawyer: lawyerId,
       details: {
         title,
-        description
+        description,
+        status: 'On-Going'
       }
     })
     const result = await Cases.findById(newCase._id)

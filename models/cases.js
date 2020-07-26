@@ -7,6 +7,7 @@ const casesSchema = new mongoose.Schema({
   details: {
     title: String,
     description: String,
+    status: String,
     hearings: [{
       title: String,
       description: String,

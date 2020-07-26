@@ -45,3 +45,16 @@ exports.changeHearingStatus = async (req, res) => {
     await res.json({error: 'something went wrong!'})
   }
 }
+exports.completeCase = async (req, res) => {
+  try {
+    const {caseId} = req.body
+    const cases = await Cases.findOneAndUpdate({_id: mongoose.Types.ObjectId(caseId)}, {
+      "details.status": 'Completed'
+    }, {new: true})
+      .populate('lawyer', 'firstName lastName profileImage email lawyer_details')
+      .populate('client', 'firstName lastName profileImage email')
+    await res.json({success: true, message: 'Case Completed Successfully!', cases})
+  } catch (e) {
+    await res.json({error: 'something went wrong!'})
+  }
+}
